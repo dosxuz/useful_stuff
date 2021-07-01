@@ -1,0 +1,13 @@
+execute pathogen#infect()
+syntax on
+filetype plugin indent on
+let mapleader = " "
+set nu
+set rnu
+let g:livepreview_previewer = 'zathura'
+let g:mkdp_browser = 'google-chrome-stable'
+let g:mkdp_echo_preview_url = 1
+:map <leader>mm <Esc>:MarkdownPreview<CR>
+:map <leader>ll <Esc>:LLPStartPreview<CR>
+:map <leader>e <Esc>:Explore<CR>
+:map <leader>s <Esc>:Sexplore<CR>
