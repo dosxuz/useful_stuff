@@ -16,7 +16,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "go" },
+    pattern = { "go", "python", "c", "cpp", "markdown" },
     callback = function()
         vim.treesitter.start()
     end,
