@@ -30,7 +30,9 @@ return {
                 settings = {
                     gopls = {
                         analyses = {
+                            nilness = true,
                             unusedparams = true,
+                            shadow = true,
                         },
                         staticcheck = true,
                         gofumpt = true,
@@ -39,7 +41,7 @@ return {
                     },
                 },
                 capabilities = capabilities,
-                cmd = {"gopls"},
+                cmd = { "gopls" },
                 filetype = { "go", "gomod", "gowork", "gotmpl" },
             })
 
