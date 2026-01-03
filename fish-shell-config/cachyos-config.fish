@@ -93,8 +93,15 @@ function copy
     end
 end
 
+# function vl
+#     set sel (find . -maxdepth 1 -type f \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.avi" -o -iname "*.mov" -o -iname "*.ts" -o -iname "*.m4v" \) | fzf)
+#     test -n "$sel"; and nohup vlc "$sel" >/dev/null 2>&1 &
+# end
+
 function vl
-    set sel (find . -maxdepth 1 -type f \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.avi" -o -iname "*.mov" -o -iname "*.ts" -o -iname "*.m4v" \) | fzf)
+    set sel (find . -maxdepth 1 \( -type f -o -type l \) \
+        \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.avi" -o -iname "*.mov" -o -iname "*.ts" -o -iname "*.m4v" \) \
+        | fzf)
     test -n "$sel"; and nohup vlc "$sel" >/dev/null 2>&1 &
 end
 
@@ -104,6 +111,54 @@ function ok
 	    nohup okular "$sel" >/dev/null 2>&1 &
     end
 end
+
+function fzf_open --description "fd + fzf with Kitty inline image previews"
+    set -l file (
+        fd --type f --hidden --follow 2>/dev/null | fzf \
+            --prompt="Select file > " \
+            --height=90% \
+            --layout=reverse \
+            --preview-window=right:60%:wrap \
+            --preview '
+                set f {}
+                if test -z "$f"
+                    exit
+                end
+
+                set mime (file --mime-type -Lb "$f")
+
+                switch $mime
+                    case "image/*"
+                        # Simply write the image escape sequence to stdout
+                        kitty icat --clear --transfer-mode=file --stdin=no --place=90x40@70x0 "$f"
+
+                    case "application/pdf"
+                        pdftotext -f 1 -l 5 "$f" - 2>/dev/null | sed -n "1,200p"
+
+                    case "text/*" "application/json" "application/xml" "application/x-shellscript"
+                        bat --style=numbers --color=always --line-range :500 "$f" 2>/dev/null \
+                            || sed -n "1,500p" "$f"
+
+                    case "*"
+                        file "$f"
+                end
+            '
+    )
+
+    if test -z "$file"
+        return
+    end
+
+    set -l mime (file --mime-type -Lb "$file")
+
+    switch $mime
+        case "text/*" "application/json" "application/xml" "application/x-shellscript"
+            nvim "$file"
+        case "*"
+            xdg-open "$file" >/dev/null 2>&1 &
+    end
+end
+
 
 ## Useful aliases
 # Replace ls with eza

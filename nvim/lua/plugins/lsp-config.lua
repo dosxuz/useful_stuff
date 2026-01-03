@@ -45,6 +45,32 @@ return {
                 filetype = { "go", "gomod", "gowork", "gotmpl" },
             })
 
+            -- Harper LSP (Grammar + Spelling for Markdown)
+            lspconfig.harper_ls.setup({
+                capabilities = capabilities,
+                filetypes = { "markdown" },
+                settings = {
+                    harper = {
+                        diagnostics = true,
+
+                        grammar = {
+                            enabled = true,
+                        },
+
+                        spelling = {
+                            enabled = true,
+                            dictionary = {
+                                path = vim.fn.expand("/home/dos/.config/harper-ls/dictionary.txt"),
+                            },
+                        },
+
+                        markdown = {
+                            ignore_code_blocks = true,
+                        },
+                    },
+                },
+            })
+
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
             vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
