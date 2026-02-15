@@ -8,5 +8,7 @@ return {
 	-- config = function()
 	--     require("obsidian").setup({ ui = { enable = false } })
 	-- end,
-	opts = {},
+	opts = {
+		render_modes = false,
+	},
 }
